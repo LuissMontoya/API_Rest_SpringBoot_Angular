@@ -20,8 +20,8 @@ export class ClienteService {
     return this.http.get<Cliente[]>(this.urlEndPoint);
   }
 
-  create(cliente: Cliente): Observable<Cliente>{
-    return this.http.post<Cliente>(this.urlEndPoint, cliente, {headers: this.httpHeaders})
+  create(cliente: Cliente): Observable<any>{
+    return this.http.post<any>(this.urlEndPoint, cliente, {headers: this.httpHeaders})
     .pipe(
       catchError(e  =>{
         console.log(e.error.error);
@@ -43,8 +43,8 @@ export class ClienteService {
     );
   }
 
-  update(cliente: Cliente): Observable<Cliente>{
-    return this.http.put<Cliente>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers: this.httpHeaders})
+  update(cliente: Cliente): Observable<any>{
+    return this.http.put<any>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers: this.httpHeaders})
     .pipe(
       catchError(e  =>{
         console.log(e.error.mensaje);
