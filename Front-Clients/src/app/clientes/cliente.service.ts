@@ -1,7 +1,7 @@
 import swal from 'sweetalert2';
 import { Injectable } from '@angular/core';
 import { Cliente } from './cliente';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, throwError, map } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Router } from '@angular/router';
@@ -20,9 +20,10 @@ export class ClienteService {
     return this.http.get<Cliente[]>(this.urlEndPoint);
   }
 
-  create(cliente: Cliente): Observable<any>{
-    return this.http.post<any>(this.urlEndPoint, cliente, {headers: this.httpHeaders})
+  create(cliente: Cliente): Observable<Cliente>{
+    return this.http.post<Cliente>(this.urlEndPoint, cliente, {headers: this.httpHeaders})
     .pipe(
+      map( (response: any) => response.cliente as Cliente),
       catchError(e  =>{
         console.log(e.error.error);
         swal.fire('Error al Crear', e.error.error, 'error');
@@ -43,6 +44,7 @@ export class ClienteService {
     );
   }
 
+  // Meth2 undefined recibiendo el json
   update(cliente: Cliente): Observable<any>{
     return this.http.put<any>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers: this.httpHeaders})
     .pipe(
