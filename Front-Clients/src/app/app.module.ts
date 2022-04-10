@@ -1,5 +1,6 @@
+
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
@@ -14,12 +15,18 @@ import { DirectivaComponent } from './directiva/directiva.component';
 import { FormComponent } from './clientes/form.component';
 
 
+import  localeES from '@angular/common/locales/es-CO';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeES, 'es-CO');
+
+
 const routes: Routes = [
-  {path: '', redirectTo: '/clientes', pathMatch: 'full'},
-  {path: 'directivas', component: DirectivaComponent},
-  {path: 'clientes', component: ClientesComponent},
-  {path: 'clientes/form', component: FormComponent},
-  {path: 'clientes/form/:id', component: FormComponent},
+  { path: '', redirectTo: '/clientes', pathMatch: 'full' },
+  { path: 'directivas', component: DirectivaComponent },
+  { path: 'clientes', component: ClientesComponent },
+  { path: 'clientes/form', component: FormComponent },
+  { path: 'clientes/form/:id', component: FormComponent },
 ];
 
 @NgModule({
@@ -29,16 +36,16 @@ const routes: Routes = [
     NavBarComponent,
     HeaderComponent,
     DirectivaComponent,
-    FormComponent
+    FormComponent,
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    RouterModule.forRoot(routes)
+    RouterModule.forRoot(routes),
   ],
-  providers: [ClienteService],
-  bootstrap: [AppComponent]
+  providers: [ClienteService, { provide: LOCALE_ID, useValue: 'es-CO' }],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
