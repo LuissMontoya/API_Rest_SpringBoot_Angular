@@ -25,6 +25,11 @@ export class ClienteService {
     .pipe(
       map( (response: any) => response.cliente as Cliente),
       catchError(e  =>{
+
+        if (e.status == 400){
+          return throwError(e);
+        }
+
         console.log(e.error.error);
         swal.fire('Error al Crear', e.error.error, 'error');
         return throwError(e);
@@ -49,6 +54,9 @@ export class ClienteService {
     return this.http.put<any>(`${this.urlEndPoint}/${cliente.id}`, cliente, {headers: this.httpHeaders})
     .pipe(
       catchError(e  =>{
+        if (e.status == 400){
+          return throwError(e);
+        }
         console.log(e.error.mensaje);
         swal.fire('Error al Editar', e.error.error, 'error');
         return throwError(e);

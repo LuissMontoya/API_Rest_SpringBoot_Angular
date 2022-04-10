@@ -10,7 +10,6 @@ import { FormControl, FormGroup } from '@angular/forms';
   templateUrl: './form.component.html',
 })
 export class FormComponent implements OnInit {
-
   cliente: Cliente = {
     nombre: '',
     apellido: '',
@@ -20,6 +19,7 @@ export class FormComponent implements OnInit {
   };
 
   public titulo: string = 'Crear Cliente';
+  errores: string[] = [];
 
   constructor(
     private clienteService: ClienteService,
@@ -43,15 +43,22 @@ export class FormComponent implements OnInit {
   }
 
   create(): void {
-    this.clienteService.create(this.cliente).subscribe((cliente) => {
-      console.log(cliente.nombre);
-      this.router.navigate(['/clientes']);
-      swal.fire(
-        'Nuevo cliente',
-        `El cliente ${cliente.nombre} ha sido creado con Éxito`,
-        'success'
-      );
-    });
+    this.clienteService.create(this.cliente).subscribe(
+      (cliente) => {
+        console.log(cliente.nombre);
+        this.router.navigate(['/clientes']);
+        swal.fire(
+          'Nuevo cliente',
+          `El cliente ${cliente.nombre} ha sido creado con Éxito`,
+          'success'
+        );
+      },
+      (err) => {
+        this.errores = err.error.errors as string[];
+        console.log('Errores desde el backend: '+ err.status);
+        console.log(err.error.errors);
+      }
+    );
   }
 
   update(): void {
@@ -62,6 +69,11 @@ export class FormComponent implements OnInit {
         `${json.mensaje} : ${json.cliente.nombre}`,
         'success'
       );
+    },
+    (err) => {
+      this.errores = err.error.errors as string[];
+      console.log('Errores desde el backend: '+ err.status);
+      console.log(err.error.errors);
     });
   }
 }
