@@ -5,7 +5,6 @@ import { Cliente } from './cliente';
 import { Observable, catchError, throwError, map, tap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
-
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -17,27 +16,36 @@ export class ClienteService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  getClientes(): Observable<Cliente[]> {
+  getClientes(page: number): Observable<any> {
     //return of(ClientesJson);
     //return this.http.get<Cliente[]>(this.urlEndPoint);
-    return this.http.get(this.urlEndPoint).pipe(
-
-      map((response) => {
-        let clientes = response as Cliente[];
-        return clientes.map((cliente) => {
-          cliente.nombre = cliente.nombre.toUpperCase();
-          //cliente.createAt= formatDate(cliente.createAt, 'dd/MM/yyyy','en-US');
-          //cliente.createAt= formatDate(cliente.createAt, 'fullDate','en-US');
-          cliente.createAt= formatDate(cliente.createAt, 'EEEE dd, MMMM yyyy','es-CO');
-
-          return cliente;
-        });
-      }),
-      tap(response =>{
-        response.forEach(cliente => {
+    return this.http.get(this.urlEndPoint + '/page/' + page).pipe(
+      tap((response: any) => {
+        console.log('ClienteService: tap 1');
+        (response.content as Cliente[]).forEach((cliente) => {
           console.log(cliente.nombre);
         });
       }),
+      map((response: any) => {
+        (response.content as Cliente[]).map((cliente) => {
+          cliente.nombre = cliente.nombre.toUpperCase();
+          //cliente.createAt= formatDate(cliente.createAt, 'dd/MM/yyyy','en-US');
+          //cliente.createAt= formatDate(cliente.createAt, 'fullDate','en-US');
+          cliente.createAt = formatDate(
+            cliente.createAt,
+            'EEEE dd, MMMM yyyy',
+            'es-CO'
+          );
+
+          return cliente;
+        });
+        return response;
+      }),
+      tap((response) => {
+        (response.content as Cliente[]).forEach((cliente) => {
+          console.log(cliente.nombre);
+        });
+      })
     );
   }
 
