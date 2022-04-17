@@ -2,7 +2,7 @@ import swal from 'sweetalert2';
 import { Injectable, LOCALE_ID } from '@angular/core';
 import { formatDate, registerLocaleData } from '@angular/common';
 import { Cliente } from './cliente';
-import { Observable, catchError, throwError, map } from 'rxjs';
+import { Observable, catchError, throwError, map, tap } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
@@ -21,6 +21,7 @@ export class ClienteService {
     //return of(ClientesJson);
     //return this.http.get<Cliente[]>(this.urlEndPoint);
     return this.http.get(this.urlEndPoint).pipe(
+
       map((response) => {
         let clientes = response as Cliente[];
         return clientes.map((cliente) => {
@@ -31,7 +32,12 @@ export class ClienteService {
 
           return cliente;
         });
-      })
+      }),
+      tap(response =>{
+        response.forEach(cliente => {
+          console.log(cliente.nombre);
+        });
+      }),
     );
   }
 
