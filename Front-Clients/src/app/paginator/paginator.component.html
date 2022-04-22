@@ -1,4 +1,5 @@
 <ul *ngIf="paginas.length > 0" class="pagination justify-content-center">
+
   <!--anterior-->
   <li class="page-item" *ngIf="paginador.number > 0">
     <a class="page-link" [routerLink]="['/clientes/page', paginador.number - 1]"
