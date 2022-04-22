@@ -5,12 +5,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { ClientesComponent } from './clientes/clientes.component';
 import { ClienteService } from './clientes/cliente.service';
 import { RouterModule, Routes } from '@angular/router';
+import { AppComponent } from './app.component';
+import { ClientesComponent } from './clientes/clientes.component';
 import { NavBarComponent } from './footer/footer.component';
 import { HeaderComponent } from './header/header.component';
+import { PaginatorComponent } from './paginator/paginator.component';
 import { DirectivaComponent } from './directiva/directiva.component';
 import { FormComponent } from './clientes/form.component';
 
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/clientes', pathMatch: 'full' },
   { path: 'directivas', component: DirectivaComponent },
   { path: 'clientes', component: ClientesComponent },
+  { path: 'clientes/page/:page', component: ClientesComponent },
   { path: 'clientes/form', component: FormComponent },
   { path: 'clientes/form/:id', component: FormComponent },
 ];
@@ -37,6 +39,7 @@ const routes: Routes = [
     HeaderComponent,
     DirectivaComponent,
     FormComponent,
+    PaginatorComponent,
   ],
   imports: [
     BrowserModule,
