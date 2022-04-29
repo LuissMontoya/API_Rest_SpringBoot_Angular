@@ -1,10 +1,10 @@
 package com.backendapiRest.models.entity;
 
-import com.sun.istack.NotNull;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.Date;
@@ -31,14 +31,17 @@ public class Cliente implements Serializable {
     @Column(nullable = false, unique = false)
     private String email;
 
+    @NotNull(message = "No puede estar vacío")
     @Column(name = "create_at")
     @Temporal(TemporalType.DATE)
     private Date createAt;
 
-    @PrePersist
+    /*@PrePersist
     public void prePersist(){
         createAt = new Date();
     }
+    */
+
 
     public Long getId() {
         return id;
