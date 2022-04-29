@@ -21,7 +21,7 @@ import { registerLocaleData } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 
@@ -56,7 +56,7 @@ const routes: Routes = [
     BrowserAnimationsModule,
     MatDatepickerModule,
     MatFormFieldModule,
-    MatNativeDateModule
+    MatMomentDateModule
   ],
   providers: [ClienteService, { provide: LOCALE_ID, useValue: 'es-CO' }],
   bootstrap: [AppComponent],
