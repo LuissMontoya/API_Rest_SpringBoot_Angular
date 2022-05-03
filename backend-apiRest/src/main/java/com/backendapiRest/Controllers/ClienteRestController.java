@@ -2,11 +2,16 @@ package com.backendapiRest.Controllers;
 
 import com.backendapiRest.models.Services.IClienteService;
 import com.backendapiRest.models.entity.Cliente;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,6 +23,7 @@ import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -32,6 +38,8 @@ public class ClienteRestController {
 
     @Autowired
     private IClienteService clienteService;
+
+    private final Logger log = LoggerFactory.getLogger(ClienteRestController.class);
 
     @GetMapping("/clientes")
     public List<Cliente> index(){
@@ -184,7 +192,9 @@ public class ClienteRestController {
 
         if (!archivo.isEmpty()){
             String nombreArchivo = UUID.randomUUID().toString()+ "_" +archivo.getOriginalFilename().replace(" ", "");
+
             Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
+            log.info(rutaArchivo.toString());
 
             try {
                 Files.copy(archivo.getInputStream(), rutaArchivo);
@@ -212,6 +222,27 @@ public class ClienteRestController {
         }
 
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/uploads/img/{nombreFoto:.+}")
+    public ResponseEntity<Resource> verFoto(@PathVariable String nombreFoto){
+        Path rutaArchivo = Paths.get("uploads").resolve(nombreFoto).toAbsolutePath();
+        log.info(rutaArchivo.toString());
+        Resource recurso = null;
+
+        try {
+            recurso = new UrlResource(rutaArchivo.toUri());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        if (!recurso.exists() && !recurso.isReadable()){
+            throw new RuntimeException("No se pudo cargar la imagen: "+ nombreFoto);
+        }
+        HttpHeaders cabecera = new HttpHeaders();
+        cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\""+ recurso.getFilename() + "\"");
+
+        return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
     }
 
 }
