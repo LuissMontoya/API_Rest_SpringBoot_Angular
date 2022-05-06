@@ -13,6 +13,7 @@ export class DetalleComponent implements OnInit {
   cliente!: Cliente;
   titulo: string = 'Detalle del cliente';
   private fotoSeleccionada!: File;
+  nombreFoto = "Seleccionar foto";
 
   constructor(
     private clienteService: ClienteService,
@@ -32,6 +33,7 @@ export class DetalleComponent implements OnInit {
 
   seleccionarFoto(event: any) {
     this.fotoSeleccionada = event.target.files[0];
+    this.nombreFoto = this.fotoSeleccionada.name;
     console.log(this.fotoSeleccionada);
   }
 
