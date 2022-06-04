@@ -3,6 +3,7 @@ import { ClienteService } from './../cliente.service';
 import { Cliente } from './../cliente';
 import { Component, OnInit } from '@angular/core';
 import swal from 'sweetalert2';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'detalle-cliente',
@@ -14,6 +15,7 @@ export class DetalleComponent implements OnInit {
   titulo: string = 'Detalle del cliente';
   fotoSeleccionada!: File;
   nombreFoto = "Seleccionar foto";
+  progreso: number = 0;
 
   constructor(
     private clienteService: ClienteService,
@@ -33,6 +35,7 @@ export class DetalleComponent implements OnInit {
 
   seleccionarFoto(event: any) {
     this.fotoSeleccionada = event.target.files[0];
+    this.progreso = 0;
     this.nombreFoto = this.fotoSeleccionada.name;
     console.log(this.fotoSeleccionada);
     if(this.fotoSeleccionada.type.indexOf('image') <0){
@@ -55,13 +58,21 @@ export class DetalleComponent implements OnInit {
     }else{
     this.clienteService
       .subirFoto(this.fotoSeleccionada, this.cliente.id)
-      .subscribe((cliente) => {
-        this.cliente = cliente;
-        swal.fire(
-          `Foto Cargada: ${this.cliente.foto}`,
-          `La foto del cliente ${cliente.nombre} ha sido subida con Éxito`,
-          'success'
-        );
+      .subscribe((event) => {
+        if(event?.type === HttpEventType.UploadProgress){
+          this.progreso = Math.round((event.loaded/ event.total!)*100)
+        }else if(event.type === HttpEventType.Response ){
+          let response:any = event.body;
+          this.cliente = response.cliente as Cliente;
+
+          swal.fire(
+            `Foto Cargada: ${this.cliente.foto}`,
+            `La foto ha sido subida con Éxito! ${response.mensaje}`,'success'
+          );
+        }
+
+        //this.cliente = cliente;
+
       });
     }
   }
